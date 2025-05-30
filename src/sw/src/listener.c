@@ -136,7 +136,7 @@ void psc_run(psc_key **key, const psc_config *config)
 
         } else if(PSC->client_count>=PSC_MAX_CLIENTS ||
                   !(C = calloc(1,sizeof(*C)))   ||
-                  !(Cbuf = malloc(PSC_MAX_RX_MSG_LEN)))
+                  !(Cbuf = mem_malloc(PSC_MAX_RX_MSG_LEN)))
         {
         	printf("Client Count = %d\n",PSC->client_count);
         	printf("C = %d\n",(int)C);
@@ -147,7 +147,7 @@ void psc_run(psc_key **key, const psc_config *config)
                    PSC->client_count);
             close(client);
             free(C);
-            free(Cbuf);
+            mem_free(Cbuf);
         } else {
         	printf("PSC Client Count: %d\n",PSC->client_count);
             C->PSC = PSC;
@@ -221,7 +221,7 @@ static void handle_client(void *raw)
     close(C->sock);
     sys_mutex_unlock(&C->PSC->sendguard);
 
-    free(C->rxbuf);
+    mem_free(C->rxbuf);
     free(C);
     vTaskDelete(NULL);
 }
